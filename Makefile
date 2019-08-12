@@ -1,4 +1,4 @@
-IMAGE_NAME = exercism-cli
+IMAGE_NAME = andoniaf/exercism-cli
 
 # HELP
 # This will output the help for each task
