@@ -1,0 +1,23 @@
+services:
+  - docker
+
+script:
+  - bash testDockerfile.sh
+
+env:
+  global:
+  - IMAGE_NAME=exercism-cli
+  - REGISTRY_USER=andoniaf
+  - VERSION=$(date '+%Y%m%d%H%M%S')
+
+before_deploy:
+  - docker build -t "$IMAGE_NAME" .
+  - echo "$REGISTRY_PASS" | docker login -u "$REGISTRY_USER" --password-stdin
+  - docker tag "$IMAGE_NAME" "${REGISTRY_USER}/${IMAGE_NAME}:latest"
+  - docker tag "$IMAGE_NAME" "${REGISTRY_USER}/${IMAGE_NAME}:${VERSION}"
+
+deploy:
+  provider: script
+  script: docker push "${REGISTRY_USER}/${IMAGE_NAME}:latest" && docker push "${REGISTRY_USER}/${IMAGE_NAME}:${VERSION}"
+  on:
+    branch: master
