@@ -1,0 +1,9 @@
+schemaVersion: "2.0.0"
+fileExistenceTests:
+- name: 'bin exercism'
+  path: '/bin/exercism'
+  shouldExist: true
+fileContentTests:
+- name: 'Exercism user'
+  path: '/etc/passwd'
+  expectedContents: ['exercism:x:1000:1000:Linux User,,,:/home/exercism:/sbin/nologin']
