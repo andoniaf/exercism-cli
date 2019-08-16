@@ -5,7 +5,8 @@ env:
   global:
   - IMAGE_NAME=exercism-cli
   - REGISTRY_USER=andoniaf
-  - VERSION=$(date '+%Y%m%d%H%M%S')
+  # - VERSION=$(date '+%Y%m%d%H%M%S')
+  - VERSION=$(cat .semver)
 
 before_install:
   - docker build -t "$IMAGE_NAME" .
