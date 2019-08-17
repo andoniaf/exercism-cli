@@ -1,24 +1,31 @@
 FROM alpine:3.10.1 as builder
 
+ENV EXERCISM_CLI_VERSION v3.0.12
+
 WORKDIR /tmp
 
-RUN addgroup -g 1000 -S exercism && \
-adduser -u 1000 -S exercism -G exercism
+RUN apk add --no-cache ca-certificates
 
-ADD https://github.com/exercism/cli/releases/download/v3.0.12/exercism-linux-64bit.tgz .
+RUN wget "https://github.com/exercism/cli/releases/download/$EXERCISM_CLI_VERSION/exercism-linux-64bit.tgz"
 
 RUN tar -xf exercism-linux-64bit.tgz
 
 
-FROM scratch 
+FROM alpine:3.10.1
 
-# Copy unprivileged user
-COPY --from=builder /etc/passwd /etc/passwd
+RUN addgroup -g 1000 -S exercism && \
+    adduser -u 1000 -S exercism -G exercism
+
+RUN mkdir -p /home/exercism/.config/exercism
 
 # Copy bin from builder
 COPY --from=builder /tmp/exercism /bin/exercism
 
+# Copy ca-certificates
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
 USER exercism
+WORKDIR /Exercism
 
 ENTRYPOINT ["/bin/exercism"]
 
